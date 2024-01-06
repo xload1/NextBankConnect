@@ -1,0 +1,9 @@
+services:
+  postgres:
+    image: 'postgres:latest'
+    environment:
+      - 'POSTGRES_DB=nextbank'
+      - 'POSTGRES_PASSWORD=11111111Aa'
+      - 'POSTGRES_USER=postgres'
+    ports:
+      - '5432'
