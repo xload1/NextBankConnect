@@ -6,4 +6,5 @@ public enum Purpose {
 
     Purpose(String name) {
     }
+
 }

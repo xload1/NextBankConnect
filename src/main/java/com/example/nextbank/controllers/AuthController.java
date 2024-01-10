@@ -1,15 +1,19 @@
 package com.example.nextbank.controllers;
 
-import com.example.nextbank.controllers.DTOs.LoginRequest;
+import com.example.nextbank.model.DTOs.LoginRequest;
 import com.example.nextbank.model.Users;
 import com.example.nextbank.services.OperationHelper;
 import com.example.nextbank.services.UserService;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
 
 @RestController
 @RequestMapping("/authentication")
@@ -22,8 +26,10 @@ public class AuthController {
         this.userService = userService;
     }
     @GetMapping("/")
-    public String index() {
-        return "redirect:/login";
+    public ResponseEntity<Void> index() {
+        return ResponseEntity.status(HttpStatus.SEE_OTHER)
+                .location(java.net.URI.create(ServletUriComponentsBuilder.fromUriString("/authentication/login").build().toUriString()))
+                .build();
     }
 
     @GetMapping("/login")
@@ -41,7 +47,12 @@ public class AuthController {
         return ResponseEntity.ok("redirect:/profile");
     }
     @PostMapping("/login")
-    public ResponseEntity<String> login(@Valid @RequestBody LoginRequest loginRequest, HttpServletResponse response) {
+    public ResponseEntity<String> login(@Valid @RequestBody LoginRequest loginRequest, HttpServletResponse response) throws NoSuchAlgorithmException, InvalidKeySpecException {
+        Users user = userService.getUserByEmail(loginRequest.getEmail());
+        if(user == null)
+            throw new IllegalArgumentException("User not found");
+        if(!operationHelper.passwordHash(user.getPassword()).equals(loginRequest.getPassword()))
+            throw new IllegalArgumentException("Wrong password");
         operationHelper.saveCookie(response, "user", userService.getUserByEmail(loginRequest.getEmail()).getUser_id() + "");
         return ResponseEntity.ok("redirect:/profile");
     }

@@ -1,4 +1,4 @@
-package com.example.nextbank.controllers.DTOs;
+package com.example.nextbank.model.DTOs;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;

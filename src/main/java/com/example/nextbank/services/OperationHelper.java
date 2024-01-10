@@ -1,5 +1,7 @@
 package com.example.nextbank.services;
 
+import com.example.nextbank.enums.Purpose;
+import com.example.nextbank.enums.Roles;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.stereotype.Service;
@@ -13,18 +15,18 @@ import java.security.spec.KeySpec;
 
 @Service
 public class OperationHelper {
-    public double getResultAmount(double amount, String purpose, String role) {
+    public double getResultAmount(double amount, Purpose purpose, Roles role) {
         double commission = 0.0;
         switch (purpose) {
-            case "Withdrawal" -> commission = 0.05;
-            case "Deposit" -> commission = 0.0;
-            case "Basic Transfer" -> commission = 0.02;
-            case "Payment", "Gift" -> commission = 0.01;
+            case WITHDRAW -> commission = 0.05;
+            case DEPOSIT -> commission = 0.0;
+            case TRANSFER -> commission = 0.02;
+            case PAYMENT, GIFT -> commission = 0.01;
         }
         switch (role){
-            case "SILVER" -> commission += 0.05;
-            case "GOLDEN" -> commission += 0.02;
-            case "PLATINUM" -> commission += 0.00;
+            case SILVER -> commission += 0.05;
+            case GOLDEN -> commission += 0.02;
+            case PLATINUM -> commission += 0.00;
         }
         return amount - (amount * commission);
     }

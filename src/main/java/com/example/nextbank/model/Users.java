@@ -1,5 +1,7 @@
 package com.example.nextbank.model;
 
+import com.example.nextbank.enums.Purpose;
+import com.example.nextbank.enums.Roles;
 import com.example.nextbank.services.OperationHelper;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
@@ -16,10 +18,12 @@ import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 import java.time.LocalDate;
 import java.util.Date;
+import java.util.Objects;
+
+import static com.example.nextbank.enums.Roles.SILVER;
 
 @Entity
 @Getter
-@Setter
 @NoArgsConstructor
 public class Users {
     @Id
@@ -38,7 +42,8 @@ public class Users {
     private String email;
     @NotNull(message = "Password is required")
     private String password;
-    private String role;
+    @Enumerated(EnumType.STRING)
+    private Roles role;
     @NotNull(message = "Birth date is required")
     @Past(message = "Birth date must be in the past")
     private LocalDate birth_date;
@@ -51,6 +56,50 @@ public class Users {
         this.password = new OperationHelper().passwordHash(password);
         this.balance = 0.0;
         this.birth_date = LocalDate.parse(birth_date);
-        this.role = "SILVER";
+        this.role = SILVER;
+    }
+
+    public Users(double balance, Users user) {
+        this.balance = balance;
+        this.name = user.getName();
+        this.middleName = user.getMiddleName();
+        this.surname = user.getSurname();
+        this.email = user.getEmail();
+        this.password = user.getPassword();
+        this.role = user.getRole();
+        this.birth_date = user.getBirth_date();
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setMiddleName(String middleName) {
+        this.middleName = middleName;
+    }
+
+    public void setSurname(String surname) {
+        this.surname = surname;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public void setPassword(String password) throws NoSuchAlgorithmException, InvalidKeySpecException {
+        this.password = new OperationHelper().passwordHash(password);
+    }
+
+    public void setRole(Roles role) {
+        this.role = Objects.requireNonNullElse(role, SILVER);
+    }
+
+    public void setBirth_date(LocalDate birth_date) {
+        this.birth_date = birth_date;
+    }
+
+    public void setBalance(double balance) {
+        if(balance == 0) balance = 0.0;
+        else this.balance = balance;
     }
 }
