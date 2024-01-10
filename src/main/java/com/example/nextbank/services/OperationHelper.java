@@ -3,11 +3,15 @@ package com.example.nextbank.services;
 import com.example.nextbank.enums.Purpose;
 import com.example.nextbank.enums.Roles;
 import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.stereotype.Service;
 
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.security.spec.InvalidKeySpecException;
@@ -15,6 +19,7 @@ import java.security.spec.KeySpec;
 
 @Service
 public class OperationHelper {
+
     public double getResultAmount(double amount, Purpose purpose, Roles role) {
         double commission = 0.0;
         switch (purpose) {
@@ -30,7 +35,8 @@ public class OperationHelper {
         }
         return amount - (amount * commission);
     }
-    public Cookie getCookie(Cookie[] cookies, String name) {
+    public Cookie getCookie(HttpServletRequest request, String name) {
+        Cookie[] cookies = request.getCookies();
         if (cookies != null) {
             for (Cookie cookie : cookies) {
                 if (cookie.getName().equals(name))
@@ -51,11 +57,8 @@ public class OperationHelper {
         cookie.setMaxAge(0);
         response.addCookie(cookie);
     }
-    public String passwordHash(String password) throws NoSuchAlgorithmException, InvalidKeySpecException {
-        SecureRandom random = new SecureRandom();
-        byte[] salt = new byte[16];
-        random.nextBytes(salt);
-        KeySpec spec = new PBEKeySpec(password.toCharArray(), salt, 65536, 128);
+    public String passwordHash(String password) throws NoSuchAlgorithmException, InvalidKeySpecException, IOException {
+        KeySpec spec = new PBEKeySpec(password.toCharArray(), Files.readAllBytes(Path.of("C:\\Users\\marat\\IdeaProjects\\NextBank Connect\\salt.txt")), 65536, 128);
         SecretKeyFactory factory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");
         byte[] hash = factory.generateSecret(spec).getEncoded();
         return new String(hash);

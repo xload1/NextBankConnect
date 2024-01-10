@@ -14,6 +14,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.grammars.hql.HqlParser;
 
+import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 import java.time.LocalDate;
@@ -24,7 +25,6 @@ import static com.example.nextbank.enums.Roles.SILVER;
 
 @Entity
 @Getter
-@NoArgsConstructor
 public class Users {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -48,15 +48,20 @@ public class Users {
     @Past(message = "Birth date must be in the past")
     private LocalDate birth_date;
     private double balance;
-    public Users(String name, String middleName, String surname, String email, String password, String birth_date) throws NoSuchAlgorithmException, InvalidKeySpecException {
-        this.name = name;
-        this.middleName = middleName;
-        this.surname = surname;
-        this.email = email;
-        this.password = new OperationHelper().passwordHash(password);
-        this.balance = 0.0;
-        this.birth_date = LocalDate.parse(birth_date);
+//    public Users(String name, String middleName, String surname, String email, String password, String birth_date) throws NoSuchAlgorithmException, InvalidKeySpecException, IOException {
+//        this.name = name;
+//        this.middleName = middleName;
+//        this.surname = surname;
+//        this.email = email;
+//        this.password = new OperationHelper().passwordHash(password);
+//        this.balance = 0.0;
+//        this.birth_date = LocalDate.parse(birth_date);
+//        this.role = SILVER;
+//    }
+
+    public Users() {
         this.role = SILVER;
+        this.balance = 0.0;
     }
 
     public Users(double balance, Users user) {
@@ -68,6 +73,7 @@ public class Users {
         this.password = user.getPassword();
         this.role = user.getRole();
         this.birth_date = user.getBirth_date();
+        this.user_id = user.getUser_id();
     }
 
     public void setName(String name) {
@@ -86,12 +92,12 @@ public class Users {
         this.email = email;
     }
 
-    public void setPassword(String password) throws NoSuchAlgorithmException, InvalidKeySpecException {
+    public void setPassword(String password) throws NoSuchAlgorithmException, InvalidKeySpecException, IOException {
         this.password = new OperationHelper().passwordHash(password);
     }
 
-    public void setRole(Roles role) {
-        this.role = Objects.requireNonNullElse(role, SILVER);
+    public void setRole() {
+        this.role = SILVER;
     }
 
     public void setBirth_date(LocalDate birth_date) {

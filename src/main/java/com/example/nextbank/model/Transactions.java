@@ -1,49 +1,53 @@
 package com.example.nextbank.model;
 
 import com.example.nextbank.enums.Purpose;
-import com.example.nextbank.services.UserService;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.LocalDate;
 
 @Entity
 @Getter
 @AllArgsConstructor
-@NoArgsConstructor
 public class Transactions {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int transaction_id;
-    private int user1_id;
-    private int user2_id;
+    @Column(name = "user1_id")
+    private int user1id;
+    @Column(name = "user2_id")
+    private int user2id;
     @Enumerated(EnumType.STRING)
     private Purpose purpose;
     @NotNull
-    @Positive
+    @Positive(message = "Amount must be positive")
     private double amount;
+    @Column(name = "transaction_date")
     private LocalDate date;
+    private double amount_after;
 
-    public Transactions(int user1_id, int user2_id, Purpose purpose, double amount) {
-        this.user1_id = user1_id;
-        this.user2_id = user2_id;
-        this.purpose = purpose;
-        this.amount = amount;
+//    public Transactions(int user1id, int user2id, Purpose purpose, double amount) {
+//        this.user1id = user1id;
+//        this.user2id = user2id;
+//        this.purpose = purpose;
+//        this.amount = amount;
+//        this.date = java.time.LocalDate.now();
+//    }
+
+    public Transactions() {
         this.date = java.time.LocalDate.now();
     }
 
-    public void setUser1_id(int user1_id) {
-        this.user1_id = user1_id;
+    public void setUser1id(int user1_id) {
+        this.user1id = user1_id;
     }
 
-    public void setUser2_id(int user2_id) {
-        this.user2_id = user2_id;
+    public void setUser2id(int user2_id) {
+        this.user2id = user2_id;
     }
 
     public void setPurpose(Purpose purpose) {
@@ -61,4 +65,7 @@ public class Transactions {
         this.date = LocalDate.parse(date);
     }
 
+    public void setAmount_after(double amount_after) {
+        this.amount_after = amount_after;
+    }
 }

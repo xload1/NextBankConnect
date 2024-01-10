@@ -15,7 +15,6 @@ import java.time.LocalDate;
 @Getter
 @Setter
 @AllArgsConstructor
-@NoArgsConstructor
 public class Comments {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,11 +25,15 @@ public class Comments {
     private String comment_text;
     private LocalDate date;
 
-    public Comments(int feedback_id, int user_id, String heading, String comment_text) {
-        this.feedback_id = feedback_id;
-        this.user_id = user_id;
-        this.heading = heading;
-        this.comment_text = comment_text;
+//    public Comments(int feedback_id, int user_id, String heading, String comment_text) {
+//        this.feedback_id = feedback_id;
+//        this.user_id = user_id;
+//        this.heading = heading;
+//        this.comment_text = comment_text;
+//        this.date = java.time.LocalDate.now();
+//    }
+
+    public Comments() {
         this.date = java.time.LocalDate.now();
     }
 }
