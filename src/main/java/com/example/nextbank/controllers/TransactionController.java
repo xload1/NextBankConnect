@@ -36,13 +36,16 @@ public class TransactionController {
     @PutMapping("/new")
     public ResponseEntity<String> newTransaction(@Valid @RequestBody Transactions transaction) throws IllegalAccessException {
         double resultAmount;
+        //handling the case when the user sends money to himself
         if (transaction.getUser1id() == transaction.getUser2id())
             throw new IllegalArgumentException("You can't send money to yourself");
+        //getting the result amount after the fees
         if (transaction.getUser1id() != 0)
             resultAmount = operationHelper.getResultAmount(transaction.getAmount(), transaction.getPurpose(), userService.getUserById(transaction.getUser1id()).getRole());
         else
             resultAmount = operationHelper.getResultAmount(transaction.getAmount(), transaction.getPurpose(), userService.getUserById(transaction.getUser2id()).getRole());
         transaction.setAmount_after(resultAmount);
+        //transaction logic
         switch (transaction.getPurpose()) {
             case TRANSFER, GIFT, PAYMENT -> {
                 if (userService.getUserById(transaction.getUser1id()).getBalance() - resultAmount < 0)
