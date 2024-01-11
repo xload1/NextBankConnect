@@ -45,12 +45,12 @@ public class TransactionService {
                 }
             }else if(e.getUser2id()==user_id){
                 if(e.getUser1id() == 0){
-                    return "Deposited: " + "+" + e.getAmount() + "\n" +
+                    return "Deposited: " + "+" + e.getAmount_after() + "\n" +
                             "Balance: " + userService.getUserById(e.getUser2id()).getBalance() + "\n" +
                             "Date: " + e.getDate().format(formatter) + "\n" +
                             "Purpose: " + e.getPurpose();
                 }else{
-                return "Received: " + "+" + e.getAmount() + "\n" +
+                return "Received: " + "+" + e.getAmount_after() + "\n" +
                         "Balance: " + userService.getUserById(e.getUser2id()).getBalance() + "\n" +
                         "Date: " + e.getDate().format(formatter) + "\n" +
                         "Purpose: " + e.getPurpose();

@@ -74,7 +74,7 @@ public class TransactionController {
 
     @GetMapping("/")
     public List<String> getTransactions(HttpServletRequest request) {
-        return transactionService.getFormattedTransactions(Integer.parseInt(operationHelper.getCookie(request, "user_id").getValue()));
+        return transactionService.getFormattedTransactions(Integer.parseInt(operationHelper.getCookie(request, "user").getValue()));
     }
 
     @ExceptionHandler
