@@ -6,5 +6,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface TransactionsRepository extends JpaRepository<Transactions, Integer> {
-    public List<Transactions> findAllByUser1idAndUser2id(int user1id, int user2id);
+    public List<Transactions> findAllByUser1idOrUser2id(int user1id, int user2id);
 }

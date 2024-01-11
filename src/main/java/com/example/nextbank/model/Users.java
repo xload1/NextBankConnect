@@ -4,10 +4,7 @@ import com.example.nextbank.enums.Purpose;
 import com.example.nextbank.enums.Roles;
 import com.example.nextbank.services.OperationHelper;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Null;
-import jakarta.validation.constraints.Past;
+import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -41,6 +38,7 @@ public class Users {
     @Email(message = "Email must be valid")
     private String email;
     @NotNull(message = "Password is required")
+    @Size(min = 4, message = "Password must be at least 4 characters")
     private String password;
     @Enumerated(EnumType.STRING)
     private Roles role;
@@ -105,7 +103,6 @@ public class Users {
     }
 
     public void setBalance(double balance) {
-        if(balance == 0) balance = 0.0;
-        else this.balance = balance;
+        this.balance = balance;
     }
 }

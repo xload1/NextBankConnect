@@ -12,24 +12,19 @@ import java.util.List;
 public class TransactionService {
     TransactionsRepository transactionsRepository;
     UserService userService;
-
+    @Autowired
     public TransactionService(TransactionsRepository transactionsRepository, UserService userService) {
         this.transactionsRepository = transactionsRepository;
         this.userService = userService;
     }
 
-    @Autowired
-    public TransactionService(TransactionsRepository transactionsRepository) {
-        this.transactionsRepository = transactionsRepository;
-
-    }
 
     public void saveTransaction(Transactions transaction) {
         transactionsRepository.save(transaction);
     }
     public List<String> getFormattedTransactions(int user_id) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
-        return transactionsRepository.findAllByUser1idAndUser2id(user_id, user_id).stream().map(e->{
+        return transactionsRepository.findAllByUser1idOrUser2id(user_id, user_id).stream().map(e->{
             if(e.getUser1id()==user_id){
                 if(e.getUser2id()==0){
                     return "Withdrawn: " + "-" + e.getAmount() + "\n" +

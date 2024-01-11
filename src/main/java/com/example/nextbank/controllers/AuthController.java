@@ -15,6 +15,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
+import java.text.ParseException;
 
 @RestController
 @RequestMapping("/authentication")
@@ -42,10 +43,13 @@ public class AuthController {
         return "register page";
     }
     @PostMapping("/register")
-    public ResponseEntity<String> register(@Valid @RequestBody Users user, HttpServletResponse response) {
+    public ResponseEntity<String> register(@Valid @RequestBody Users user, HttpServletResponse response) throws ParseException {
+        if(userService.getUserByEmail(user.getEmail()) != null)
+            throw new IllegalArgumentException("User already exists");
+        user.setBalance(operationHelper.formatFunds(user.getBalance()));
         operationHelper.saveCookie(response, "user", user.getUser_id() + "");
         userService.saveUser(user);
-        return ResponseEntity.ok("redirect:/profile");
+        return ResponseEntity.ok("successfully registered");
     }
     @PostMapping("/login")
     public ResponseEntity<String> login(@Valid @RequestBody LoginRequest loginRequest, HttpServletResponse response) throws NoSuchAlgorithmException, InvalidKeySpecException, IOException {

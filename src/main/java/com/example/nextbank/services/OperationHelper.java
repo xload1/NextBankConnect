@@ -10,17 +10,20 @@ import org.springframework.stereotype.Service;
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.KeySpec;
+import java.text.DecimalFormat;
+import java.text.ParseException;
 
 @Service
 public class OperationHelper {
 
-    public double getResultAmount(double amount, Purpose purpose, Roles role) {
+    public double getResultAmount(double amount, Purpose purpose, Roles role) throws ParseException {
         double commission = 0.0;
         switch (purpose) {
             case WITHDRAW -> commission = 0.05;
@@ -33,7 +36,7 @@ public class OperationHelper {
             case GOLDEN -> commission += 0.02;
             case PLATINUM -> commission += 0.00;
         }
-        return amount - (amount * commission);
+        return formatFunds(amount - (amount * commission));
     }
     public Cookie getCookie(HttpServletRequest request, String name) {
         Cookie[] cookies = request.getCookies();
@@ -62,5 +65,8 @@ public class OperationHelper {
         SecretKeyFactory factory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");
         byte[] hash = factory.generateSecret(spec).getEncoded();
         return new String(hash);
+    }
+    public double formatFunds(double funds) throws ParseException {
+        return new DecimalFormat("#.##").format(funds).equals("-0") ? 0.0 : new DecimalFormat("#.##").parse(new DecimalFormat("#.##").format(funds)).doubleValue();
     }
 }

@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.text.ParseException;
 import java.util.List;
 
 @RestController
@@ -34,7 +35,7 @@ public class TransactionController {
     }
 
     @PutMapping("/new")
-    public ResponseEntity<String> newTransaction(@Valid @RequestBody Transactions transaction) throws IllegalAccessException {
+    public ResponseEntity<String> newTransaction(@Valid @RequestBody Transactions transaction) throws IllegalAccessException, ParseException {
         double resultAmount;
         //handling the case when the user sends money to himself
         if (transaction.getUser1id() == transaction.getUser2id())
@@ -50,22 +51,18 @@ public class TransactionController {
             case TRANSFER, GIFT, PAYMENT -> {
                 if (userService.getUserById(transaction.getUser1id()).getBalance() - resultAmount < 0)
                     throw new IllegalAccessException();
-                userService.saveUser(new Users(userService.getUserById(transaction.getUser1id()).getBalance() - transaction.getAmount(),
-                        userService.getUserById(transaction.getUser1id())));
-                userService.saveUser(new Users(userService.getUserById(transaction.getUser2id()).getBalance() + resultAmount,
-                        userService.getUserById(transaction.getUser2id())));
+                userService.saveUser(new Users(userService.getUserById(transaction.getUser1id()).getBalance() - transaction.getAmount(), userService.getUserById(transaction.getUser1id())));
+                userService.saveUser(new Users(userService.getUserById(transaction.getUser2id()).getBalance() + resultAmount, userService.getUserById(transaction.getUser2id())));
                 transactionService.saveTransaction(transaction);
             }
             case DEPOSIT -> {
-                userService.saveUser(new Users(userService.getUserById(transaction.getUser2id()).getBalance() + resultAmount,
-                        userService.getUserById(transaction.getUser2id())));
+                userService.saveUser(new Users(userService.getUserById(transaction.getUser2id()).getBalance() + resultAmount, userService.getUserById(transaction.getUser2id())));
                 transactionService.saveTransaction(transaction);
             }
             case WITHDRAW -> {
                 if (userService.getUserById(transaction.getUser1id()).getBalance() - resultAmount < 0)
                     throw new IllegalAccessException();
-                userService.saveUser(new Users(userService.getUserById(transaction.getUser1id()).getBalance() - resultAmount,
-                        userService.getUserById(transaction.getUser1id())));
+                userService.saveUser(new Users(userService.getUserById(transaction.getUser1id()).getBalance() - resultAmount, userService.getUserById(transaction.getUser1id())));
                 transactionService.saveTransaction(transaction);
             }
         }
@@ -84,6 +81,7 @@ public class TransactionController {
 
     @ExceptionHandler
     public ResponseEntity<String> handleException(IllegalArgumentException e) {
+        e.printStackTrace();
         return ResponseEntity.badRequest().body("Amount must be greater than 0 " + e.getMessage());
     }
 
