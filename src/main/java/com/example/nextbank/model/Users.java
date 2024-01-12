@@ -1,22 +1,18 @@
 package com.example.nextbank.model;
 
-import com.example.nextbank.enums.Purpose;
+
 import com.example.nextbank.enums.Roles;
 import com.example.nextbank.services.OperationHelper;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import org.hibernate.grammars.hql.HqlParser;
+import org.aspectj.lang.annotation.After;
+
 
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 import java.time.LocalDate;
-import java.util.Date;
-import java.util.Objects;
 
 import static com.example.nextbank.enums.Roles.SILVER;
 
@@ -46,16 +42,6 @@ public class Users {
     @Past(message = "Birth date must be in the past")
     private LocalDate birth_date;
     private double balance;
-//    public Users(String name, String middleName, String surname, String email, String password, String birth_date) throws NoSuchAlgorithmException, InvalidKeySpecException, IOException {
-//        this.name = name;
-//        this.middleName = middleName;
-//        this.surname = surname;
-//        this.email = email;
-//        this.password = new OperationHelper().passwordHash(password);
-//        this.balance = 0.0;
-//        this.birth_date = LocalDate.parse(birth_date);
-//        this.role = SILVER;
-//    }
 
     public Users() {
         this.role = SILVER;

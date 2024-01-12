@@ -6,7 +6,6 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDate;
@@ -24,15 +23,6 @@ public class Comments {
     private String heading;
     private String comment_text;
     private LocalDate date;
-
-//    public Comments(int feedback_id, int user_id, String heading, String comment_text) {
-//        this.feedback_id = feedback_id;
-//        this.user_id = user_id;
-//        this.heading = heading;
-//        this.comment_text = comment_text;
-//        this.date = java.time.LocalDate.now();
-//    }
-
     public Comments() {
         this.date = java.time.LocalDate.now();
     }

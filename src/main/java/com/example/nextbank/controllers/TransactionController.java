@@ -87,6 +87,7 @@ public class TransactionController {
 
     @ExceptionHandler
     public ResponseEntity<String> handleException(Exception e) {
+        e.printStackTrace();
         return ResponseEntity.badRequest().body("Something went wrong " + e.getMessage());
     }
 }
